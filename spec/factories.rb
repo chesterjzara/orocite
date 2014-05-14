@@ -9,4 +9,11 @@ FactoryGirl.define do
       admin true
     end
   end
+
+  factory :idea do
+    content "Lorem ipsum"
+    proof "example.com"
+    user
+  end
+
 end

@@ -19,7 +19,7 @@ describe User do
   it { should respond_to(:remember_token) }
   it { should respond_to(:authenticate) }
   it { should respond_to(:admin) }
-
+  it { should respond_to(:ideas) }
 
   it { should be_valid }
   it { should_not be_admin }
@@ -113,9 +113,34 @@ describe User do
     end
   end
 
-describe "remember token" do
+  describe "remember token" do
     before { @user.save }
     its(:remember_token) { should_not be_blank }
   end
+
+  describe "idea associations" do
+
+    before { @user.save }
+    let!(:older_idea) do
+      FactoryGirl.create(:idea, user: @user, created_at: 1.day.ago)
+    end
+    let!(:newer_idea) do
+      FactoryGirl.create(:idea, user: @user, created_at: 1.hour.ago)
+    end
+
+    it "should have the right ideas in the right order" do
+      expect(@user.ideas.to_a).to eq [newer_idea, older_idea]
+    end
+
+    it "should destroy associated ideas" do
+      ideas = @user.ideas.to_a
+      @user.destroy
+      expect(ideas).not_to be_empty
+      ideas.each do |idea|
+        expect(Idea.where(id: idea.id)).to be_empty
+      end
+    end
+
+  end #end of idea association
   
 end
