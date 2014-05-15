@@ -8,5 +8,6 @@ class CreateIdeas < ActiveRecord::Migration
       t.timestamps
     end
     add_index :ideas, [:user_id, :created_at]
+    add_index :ideas, [:argument_id, :created_at]
   end
 end

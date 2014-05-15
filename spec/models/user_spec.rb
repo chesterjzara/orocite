@@ -20,6 +20,8 @@ describe User do
   it { should respond_to(:authenticate) }
   it { should respond_to(:admin) }
   it { should respond_to(:ideas) }
+  it { should respond_to(:arguments) }
+  it { should respond_to(:feed) }
 
   it { should be_valid }
   it { should_not be_admin }
@@ -142,5 +144,35 @@ describe User do
     end
 
   end #end of idea association
+
+  describe "argument associations" do
+
+    before { @user.save }
+    let!(:older_argument) do
+      FactoryGirl.create(:argument, user: @user, created_at: 1.day.ago)
+    end
+    let!(:newer_argument) do
+      FactoryGirl.create(:argument, user: @user, created_at: 1.hour.ago)
+    end
+
+    it "should destroy associated arguments" do
+      arguments = @user.arguments.to_a
+      @user.destroy
+      expect(arguments).not_to be_empty
+      arguments.each do |argument|
+        expect(Argument.where(id: argument.id)).to be_empty
+      end
+    end
+
+    describe "status" do
+      let(:unfollowed_arg) do
+        FactoryGirl.create(:argument, user: FactoryGirl.create(:user))
+      end
+
+      its(:feed) { should include(newer_argument) }
+      its(:feed) { should include(older_argument) }
+      its(:feed) { should_not include(unfollowed_arg) }
+    end
+  end #end of argument association
   
 end

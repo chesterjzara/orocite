@@ -85,6 +85,20 @@ describe "Authentication" do
         end
 
       end
+
+      describe "in the Arguments controller" do
+
+        describe "submitting to the create action" do
+          before { post arguments_path }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
+
+        describe "submitting to the destroy action" do
+          before { delete argument_path(FactoryGirl.create(:argument)) }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
+      end
+
     end
 
     describe "as wrong user" do

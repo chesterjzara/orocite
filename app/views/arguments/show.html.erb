@@ -1,0 +1,17 @@
+<% provide(:title, @argument.topic) %>
+<div class="row">
+  <aside class="span4">
+    <section>
+
+    </section>
+  </aside>
+  <div class="span8">
+    <% if @Argument.ideas.any? %>
+      <h3>Ideas (<%= @user.arguments.count %>)</h3>
+      <ol class="arguments">
+        <%= render @ideas %>
+      </ol>
+      <%= will_paginate @ideas %>
+    <% end %>
+  </div>
+</div>

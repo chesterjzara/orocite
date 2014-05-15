@@ -54,10 +54,19 @@ describe "User pages" do
 
   describe "profile page" do
     let(:user) { FactoryGirl.create(:user) }
+    let!(:a1) { FactoryGirl.create(:argument, user: user, topic: "Foo") }
+    let!(:a2) { FactoryGirl.create(:argument, user: user, topic: "bar") }
+
     before { visit user_path(user) }
 
     it { should have_content(user.name) }
     it { should have_title(user.name) }
+
+    describe "arguments" do
+      it { should have_content(a1.topic) }
+      it { should have_content(a2.topic) }
+      it { should have_content(user.arguments.count) }
+    end
   end
 
   describe "signup page" do
